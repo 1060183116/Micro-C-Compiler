@@ -32,6 +32,9 @@ let keyword s =
     | "while"   -> WHILE  
     (* NEW *)
     | "for"     -> FOR       
+    | "switch"  -> SWITCH
+    | "case"    -> CASE
+    | "default" -> DEFAULT
     | _         -> NAME s
  
 let cEscape s = 
@@ -56,6 +59,11 @@ rule Token = parse
                     { keyword (lexemeAsString lexbuf) }
   | "++"            { PREINC }
   | "--"            { PREDEC }
+  | "+="            { PLUSASSIGN }
+  | "-="            { MINUSASSIGN }
+  | "*="            { TIMESASSIGN }
+  | "/="            { DIVASSIGN }
+  | "%="            { MODASSIGN }
   | '+'             { PLUS } 
   | '-'             { MINUS } 
   | '*'             { TIMES } 
@@ -80,6 +88,8 @@ rule Token = parse
   | ']'             { RBRACK }
   | ';'             { SEMI }
   | ','             { COMMA }
+  | ':'             { COLON }
+  | '?'             { QST }
   | "//"            { EndLineComment lexbuf; Token lexbuf }
   | "/*"            { Comment lexbuf; Token lexbuf }
   | '"'             { CSTSTRING (String [] lexbuf) }

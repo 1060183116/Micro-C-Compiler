@@ -133,6 +133,16 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) : instr list =
       let labtest  = newLabel()
       [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
+
+    | For(e1, e2, e3, body) ->         
+      let labbegin = newLabel()
+      let labtest  = newLabel()
+
+      cExpr e1 varEnv funEnv @ [INCSP -1]
+      @ [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
+      @ cExpr e3 varEnv funEnv @ [INCSP -1]
+      @ [Label labtest] @ cExpr e2 varEnv funEnv @ [IFNZRO labbegin]
+
     | Expr e -> 
       cExpr e varEnv funEnv @ [INCSP -1]
     | Block stmts -> 
@@ -154,6 +164,19 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) : instr list =
     | Return (Some e) -> 
       cExpr e varEnv funEnv @ [RET (snd varEnv)]
 
+    | Switch(e1, caseList) -> 
+      cExpr e1 varEnv funEnv
+      @( let rec loop stmts varEnv =
+            match stmts with 
+            | []     -> (snd varEnv, [])
+            | case :: caseList2 ->
+              let labbegin = newLabel()
+              let labtest  = newLabel()
+              let (v2, store2) = cExpr e1 varEnv funEnv
+              if v1<>v2 then loop caseList2
+                 else exec (snd case) locEnv gloEnv store2
+      )
+      
 and cStmtOrDec stmtOrDec (varEnv : VarEnv) (funEnv : FunEnv) : VarEnv * instr list = 
     match stmtOrDec with 
     | Stmt stmt    -> (varEnv, cStmt stmt varEnv funEnv) 

@@ -18,10 +18,16 @@ and expr =
   | PreDec of access                 (* C/C++/Java/C --i or --a[e]  *)                                                        
   | Access of access                 (* x    or  *p    or  a[e]     *)
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
+  | PlusAssign of access * expr      (* x+=e or  *p+=e or  a[e]+=e  *)
+  | MinusAssign of access * expr     (* x-=e or  *p-=e or  a[e]-=e  *)
+  | TimesAssign of access * expr     (* x*=e or  *p*=e or  a[e]*=e  *)
+  | DivAssign of access * expr       (* x/=e or  *p/=e or  a[e]/=e  *)
+  | ModAssign of access * expr       (* x%=e or  *p%=e or  a[e]%=e  *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
+  | Prim3 of expr * expr * expr      (* a?b:c                       *)
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
@@ -38,7 +44,9 @@ and stmt =
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
   | For of expr * expr * expr * stmt (* for(i = 0; i <= n; i++)     *)
-                                                                   
+  | Switch of expr * (expr * stmt) list        (* switch no default           *)
+  | SwitchDefault of expr * (expr * stmt) list * stmt       (* switch with default           *)
+
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
   | Stmt of stmt                     (* A statement                 *)
