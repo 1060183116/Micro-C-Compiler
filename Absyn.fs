@@ -13,7 +13,9 @@ type typ =
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
                                                                    
-and expr =                                                         
+and expr = 
+  | PreInc of access                 (* C/C++/Java/C ++i or ++a[e]  *)
+  | PreDec of access                 (* C/C++/Java/C --i or --a[e]  *)                                                        
   | Access of access                 (* x    or  *p    or  a[e]     *)
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
@@ -35,6 +37,7 @@ and stmt =
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
+  | For of expr * expr * expr * stmt (* for(i = 0; i <= n; i++)     *)
                                                                    
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
