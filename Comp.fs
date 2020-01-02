@@ -163,19 +163,21 @@ let rec cStmt stmt (varEnv : VarEnv) (funEnv : FunEnv) : instr list =
       [RET (snd varEnv - 1)]
     | Return (Some e) -> 
       cExpr e varEnv funEnv @ [RET (snd varEnv)]
-
     | Switch(e1, caseList) -> 
-      cExpr e1 varEnv funEnv
-      @( let rec loop stmts varEnv =
-            match stmts with 
-            | []     -> (snd varEnv, [])
-            | case :: caseList2 ->
-              let labbegin = newLabel()
-              let labtest  = newLabel()
-              let (v2, store2) = cExpr e1 varEnv funEnv
-              if v1<>v2 then loop caseList2
-                 else exec (snd case) locEnv gloEnv store2
-      )
+      
+      let rec loop caseList1=
+          match caseList1 with 
+          | []     -> ([],[])
+          | case :: caseList2 -> 
+            let code1 = cExpr (fst case) varEnv funEnv
+            if v1<>v2 then let (fdepthr, coder) = loop caseList2
+            else let (fdepthr, coder) = cExpr (snd case) varEnv funEnv
+            (fdepthr, code1 @ coder)
+      
+      let (fdepthend, code) = loop caseList
+      cExpr e1 varEnv funEnv @code
+
+      
       
 and cStmtOrDec stmtOrDec (varEnv : VarEnv) (funEnv : FunEnv) : VarEnv * instr list = 
     match stmtOrDec with 
