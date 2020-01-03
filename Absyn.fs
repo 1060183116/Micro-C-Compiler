@@ -10,6 +10,7 @@ module Absyn
 type typ =
   | TypI                             (* Type int                    *)
   | TypC                             (* Type char                   *)
+  | TypD                             (* Type dynamic                *)
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
                                                                    
@@ -25,6 +26,7 @@ and expr =
   | ModAssign of access * expr       (* x%=e or  *p%=e or  a[e]%=e  *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
+  | CstN                             (* Constant nil                *)
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
   | Prim3 of expr * expr * expr      (* a?b:c                       *)

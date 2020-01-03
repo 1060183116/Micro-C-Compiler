@@ -33,6 +33,13 @@ type token =
   | TIMES
   | DIV
   | MOD
+  | NIL
+  | CONS
+  | CAR
+  | CDR
+  | DYNAMIC
+  | SETCAR
+  | SETCDR
   | PREINC
   | PREDEC
   | CHAR
@@ -86,6 +93,13 @@ type tokenId =
     | TOKEN_TIMES
     | TOKEN_DIV
     | TOKEN_MOD
+    | TOKEN_NIL
+    | TOKEN_CONS
+    | TOKEN_CAR
+    | TOKEN_CDR
+    | TOKEN_DYNAMIC
+    | TOKEN_SETCAR
+    | TOKEN_SETCDR
     | TOKEN_PREINC
     | TOKEN_PREDEC
     | TOKEN_CHAR
