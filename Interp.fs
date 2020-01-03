@@ -231,7 +231,7 @@ let rec exec stmt (locEnv : locEnv) (gloEnv : gloEnv) (store : store) : store =
               if v<>0 then loop (snd (eval e3 locEnv gloEnv (exec body locEnv gloEnv store2)))
                       else store2
       loop store1
-
+    // | Break _ -> failwith "break"     放弃
     | Switch(e1, caseList) -> 
       let (v1, store1) = eval e1 locEnv gloEnv store
       let rec loop caseList1 = 
